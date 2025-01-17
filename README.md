@@ -1,16 +1,12 @@
-# sky_x_fe
+# 2024W 몰입캠프
 
-A new Flutter project.
+## 4주차 공통과제 : SkyX -> FE
 
-## Getting Started
+### 김대영
+- 부산대학교 정보컴퓨터공학부 20학번
 
-This project is a starting point for a Flutter application.
+### 조성원
+- 카이스트 전산학부 20학번
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 이한샘
+- 카이스트 항공우주공학과 21학번

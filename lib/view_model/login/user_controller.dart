@@ -30,35 +30,35 @@ class UserController extends GetxController {
         Get.snackbar('성공', '카카오 로그인이 성공했습니다.');
 
         // TODO : 서버 구성되면 서버로 사용자 정보 전송 (현재는 주석)
-        // // Prepare JSON payload
-        // Map<String, dynamic> payload = {
-        //   "user_id": appUser.id.toString(), // 필드 이름 변경
-        //   "nickname": appUser.nickname ?? "",
-        //   "profileImageUrl": appUser.profileImageUrl ?? "", // 필드 이름 변경
-        // };
-        //
-        // // Send POST request to the server
-        // var response = await http.post(
-        //   Uri.parse("$serverUrl:8000/users/login"),
-        //   headers: {"Content-Type": "application/json"},
-        //   body: jsonEncode(payload),
-        // );
-        //
-        // // 응답 확인
-        // Log.info("Status Code: ${response.statusCode}");
-        // Log.info("Response Body: ${response.body}");
-        // Log.info("Payload being sent: ${jsonEncode(payload)}");
-        //
-        // if (response.statusCode == 200 || response.statusCode == 201) {
-        //   var responseData = jsonDecode(response.body);
-        //   String message = responseData["message"];
-        //   Log.info("서버 전송 성공! Server response: $message");
-        //   // Get.snackbar('서버 응답', message);
-        // } else {
-        //   Log.error('서버와의 통신 중 문제가 발생했습니다. 상태 코드: ${response.statusCode}');
-        //   Get.snackbar(
-        //       '서버 오류', '서버와의 통신 중 문제가 발생했습니다. 상태 코드: ${response.statusCode}');
-        // }
+        // Prepare JSON payload
+        Map<String, dynamic> payload = {
+          "id": appUser.id.toString(), // 필드 이름 변경
+          "nickname": appUser.nickname ?? "",
+          "profileURL": appUser.profileImageUrl ?? "", // 필드 이름 변경
+        };
+
+        // Send POST request to the server
+        var response = await http.post(
+          Uri.parse("$serverUrl:3001/api/auth/signIn"),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(payload),
+        );
+
+        // 응답 확인
+        Log.info("Status Code: ${response.statusCode}");
+        Log.info("Response Body: ${response.body}");
+        Log.info("Payload being sent: ${jsonEncode(payload)}");
+
+        if (response.statusCode == 200) {
+          var responseData = jsonDecode(response.body);
+          String updatedAt = responseData["updatedAt"];
+          Log.info("서버 전송 성공! Server updated at: $updatedAt");
+          // Get.snackbar('서버 응답', message);
+        } else {
+          Log.error('서버와의 통신 중 문제가 발생했습니다. 상태 코드: ${response.statusCode}');
+          Get.snackbar(
+              '서버 오류', '서버와의 통신 중 문제가 발생했습니다. 상태 코드: ${response.statusCode}');
+        }
       } else {
         Get.snackbar('실패', '카카오 로그인이 취소되었거나 실패했습니다.');
       }

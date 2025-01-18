@@ -6,7 +6,7 @@ class AppUser {
   static final AppUser _instance = AppUser._internal();
 
   // 사용자 속성
-  int? id;
+  String? id;
   String? nickname;
   String? profileImageUrl;
 
@@ -20,7 +20,7 @@ class AppUser {
 
   // 사용자 데이터를 설정하는 메서드
   void setUser({
-    required int id,
+    required String id,
     String? nickname,
     String? profileImageUrl,
   }) {
@@ -49,7 +49,7 @@ class AppUser {
 
     AppUser appUser = AppUser();
     appUser.setUser(
-      id: kakaoUser.id,
+      id: kakaoUser.id.toString(),
       nickname: kakaoUser.kakaoAccount?.profile?.nickname,
       profileImageUrl: kakaoUser.kakaoAccount?.profile?.profileImageUrl,
     );

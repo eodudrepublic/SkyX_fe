@@ -104,7 +104,7 @@ class LoginView extends StatelessWidget {
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.kakaotalkYellow,
+            backgroundColor: AppColors.instance.kakaotalkYellow,
             padding: EdgeInsets.symmetric(horizontal: 20.sp, vertical: 7.sp),
             shape: RoundedRectangleBorder(
               borderRadius:
@@ -123,8 +123,8 @@ class LoginView extends StatelessWidget {
               SizedBox(width: 15.sp), // 아이콘과 텍스트 간격
               Text(
                 '카카오 로그인',
-                style:
-                    TextStyle(color: AppColors.kakaotalkLabel, fontSize: 25.sp),
+                style: TextStyle(
+                    color: AppColors.instance.kakaotalkLabel, fontSize: 25.sp),
               ),
             ],
           ),
@@ -132,7 +132,8 @@ class LoginView extends StatelessWidget {
       } else {
         return Text(
           '카카오 로그인 완료!',
-          style: TextStyle(color: AppColors.kakaotalkLabel, fontSize: 25.sp),
+          style: TextStyle(
+              color: AppColors.instance.kakaotalkLabel, fontSize: 25.sp),
         );
       }
     });

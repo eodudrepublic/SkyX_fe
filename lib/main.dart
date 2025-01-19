@@ -4,7 +4,6 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:get/get.dart';
-import 'common/app_sizes.dart';
 import 'common/key.dart';
 import 'common/utils/logger.dart';
 import 'package:sky_x_fe/view/map/map_view.dart';
@@ -44,9 +43,6 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(400, 860),
       builder: (context, child) {
-        // AppSize에 statusBarHeight 설정
-        AppSizes.instance.statusBarHeight = MediaQuery.of(context).padding.top;
-
         return GetMaterialApp(
           title: 'SkyX',
           debugShowCheckedModeBanner: false,

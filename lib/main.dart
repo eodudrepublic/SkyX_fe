@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
           title: 'SkyX',
           debugShowCheckedModeBanner: false,
-          initialRoute: '/map',
+          initialRoute: '/login',
           getPages: [
             /// 로그인
             GetPage(name: '/login', page: () => LoginView()),

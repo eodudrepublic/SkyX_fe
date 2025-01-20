@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../common/app_colors.dart';
-import '../../common/utils/logger.dart';
 import '../../service/kakao_login_api.dart';
 import '../../view_model/login/user_controller.dart';
 
@@ -97,11 +96,9 @@ class LoginView extends StatelessWidget {
       if (controller.user.value?.id == null) {
         return ElevatedButton(
           onPressed: () async {
+            // TODO : 로그인 + 서버연결 중에 로딩 표시 필요
+            // 카카오 + 서버등록 + WS 연결 + 맵이동까지 UserController에서 처리
             await controller.kakaoLogin();
-            if (controller.user.value?.id != null) {
-              Log.info('로그인 성공');
-              // TODO : Get.offNamed('/home');
-            }
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.instance.kakaotalkYellow,
@@ -130,6 +127,8 @@ class LoginView extends StatelessWidget {
           ),
         );
       } else {
+        // 카카오 ID만 세팅된 상태일 수도 있으므로,
+        // 실제 "서버 등록 + WS 연결"이 끝났는지는 별도 변수로 체크 필요할 수 있음
         return Text(
           '카카오 로그인 완료!',
           style: TextStyle(

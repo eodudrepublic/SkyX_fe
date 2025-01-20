@@ -23,5 +23,6 @@ class StationMarker extends NMarker {
             text: captionText,
             // TODO : 캡션 디자인 수정
           ),
+          // TODO : 마커, 캡션 보여지는 줌 레벨 범위 지정
         );
 }

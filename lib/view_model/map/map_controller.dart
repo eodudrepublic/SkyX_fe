@@ -68,8 +68,7 @@ class MapController extends GetxController {
         lat: station.lat,
         lng: station.lng,
         stationId: station.id,
-        // TODO : infoText 어떻게 하는게 좋을까?
-        // infoText: "정류장 정보: ${station.id}"
+        captionText: station.id,
       );
     }
   }

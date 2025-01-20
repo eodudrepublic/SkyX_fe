@@ -5,15 +5,14 @@ import 'package:get/get.dart';
 import '../../common/utils/logger.dart';
 import '../../view_model/map/map_controller.dart';
 
-// TODO : 마커 2개 이은 선을 그릴 수 있는 기능 추가해야함(view model?)
 class SkyMapView extends GetView<MapController> {
   const SkyMapView({super.key});
 
   @override
   Widget build(BuildContext context) {
     MapController controller = Get.put(MapController());
-    Log.info(
-        "1.sw : ${1.sw}, 1.sh : ${1.sh}, 1.w : ${1.w}, 1.h : ${1.h}, 1.sp : ${1.sp}");
+    // Log.info(
+    //     "1.sw : ${1.sw}, 1.sh : ${1.sh}, 1.w : ${1.w}, 1.h : ${1.h}, 1.sp : ${1.sp}");
 
     return Scaffold(
       backgroundColor: Colors.black,

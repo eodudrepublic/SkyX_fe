@@ -61,6 +61,7 @@ class SkyMapView extends GetView<MapController> {
                 stopGesturesEnable: false,
                 // 네이버 로고 위치
                 logoAlign: NLogoAlign.leftTop,
+                logoMargin: EdgeInsets.only(top: 10.sp, left: 10.sp),
               ),
               // 컨트롤러에게 지도 준비 완료를 알림
               onMapReady: controller.onMapReady,

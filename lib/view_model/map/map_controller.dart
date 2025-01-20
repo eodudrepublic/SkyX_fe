@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:get/get.dart';
+import 'package:sky_x_fe/view/map/widget/custom_marker.dart';
 import '../../common/utils/logger.dart';
 
 class MapController extends GetxController {
@@ -23,24 +24,24 @@ class MapController extends GetxController {
     _naverMapController.value = controller;
 
     // 네이버 맵 초기화 작업
-    /// 지도 중점 좌표 위치에 마커 추가
-    addMarker(center, 'center_marker');
-
-    /// 지도 동북쪽 경계와 남서쪽 경계에 마커 추가
-    addMarker(northEastBound, 'northEast_bound');
-    addMarker(southWestBound, 'southWest_bound');
-
-    // TEST 1) 북동쪽 좌표 -> 중앙 좌표 -> 남서쪽 좌표를 잇는 멀티 경로
-    drawMultipartPaths(
-      coordinatesList: [
-        [northEastBound, center, southWestBound],
-      ],
-      pathId: 'multi_center_path',
-      width: 5.0,
-      outlineWidth: 2.0,
-      defaultColor: Colors.green,
-      defaultOutlineColor: Colors.black,
-    );
+    // /// 지도 중점 좌표 위치에 마커 추가
+    // addMarker(center, 'center_marker');
+    //
+    // /// 지도 동북쪽 경계와 남서쪽 경계에 마커 추가
+    // addMarker(northEastBound, 'northEast_bound');
+    // addMarker(southWestBound, 'southWest_bound');
+    //
+    // // TEST 1) 북동쪽 좌표 -> 중앙 좌표 -> 남서쪽 좌표를 잇는 멀티 경로
+    // drawMultipartPaths(
+    //   coordinatesList: [
+    //     [northEastBound, center, southWestBound],
+    //   ],
+    //   pathId: 'multi_center_path',
+    //   width: 5.0,
+    //   outlineWidth: 2.0,
+    //   defaultColor: Colors.green,
+    //   defaultOutlineColor: Colors.black,
+    // );
 
     // // TEST 2) 북동쪽 좌표 <-> 남서쪽 좌표 두 점을 직선으로 연결
     // drawLineBetween(
@@ -52,16 +53,24 @@ class MapController extends GetxController {
     //   color: Colors.red,
     //   width: 4.0,
     // );
+
+    // TEST 3) N1 역 마커 추가
+    addStationMarker(
+      lat: 36.37422319491133,
+      lng: 127.3657201432359,
+      stationId: "N1",
+      // infoText: "N1 station",
+    );
   }
 
-  /// 특정 위도/경도에 마커를 추가하는 기본 메서드
-  /// - (커스텀 아이콘이 아닌) 기본 마커 아이콘으로 표시
+  /// 특정 위도/경도에 기본 마커를 추가하는 메서드
   Future<void> addMarker(NLatLng position, String markerId) async {
     if (naverMapController == null) return;
 
     final marker = NMarker(
       id: markerId, // 마커 식별자
       position: position,
+      // caption: NOverlayCaption(text: markerId),
     );
 
     // addOverlay로 지도 위에 표시
@@ -74,72 +83,61 @@ class MapController extends GetxController {
         "마커 추가 완료: ${position.latitude}, ${position.longitude} / ID: $markerId");
   }
 
-  //--------------------------------------------------------------------------
-  // (1) 마커 디자인을 설정하는 메서드
-  //     - Widget을 이용해 마커 이미지를 생성 (NOverlayImage.fromWidget)
-  //     - 직접 만든 widget 아이콘을 마커에 적용해준다.
-  //--------------------------------------------------------------------------
-  Future<void> addCustomMarker({
+  /// station 마커를 추가하는 메서드
+  Future<void> addStationMarker({
     required double lat,
     required double lng,
-    required String markerId,
-    required Widget markerWidget,
-    required BuildContext context, // fromWidget 호출 시 필요
-    Size size = const Size(48, 48),
+    required String stationId,
+    String captionText = '',
+    String infoText = '',
   }) async {
     if (naverMapController == null) return;
 
-    // 1) widget -> NOverlayImage 변환
-    final overlayImage = await NOverlayImage.fromWidget(
-      widget: markerWidget,
-      size: size,
-      context: context,
+    // 1) station 마커 생성
+    final marker = StationMarker(
+      lat: lat,
+      lng: lng,
+      stationId: stationId,
+      captionText: captionText,
+      infoText: infoText,
     );
 
-    // 2) 커스텀 아이콘 마커 생성
-    final marker = NMarker(
-      id: markerId,
-      position: NLatLng(lat, lng),
-      icon: overlayImage,
-    );
+    // 2) 터치 리스너 등록 (토글 기능)
+    if (infoText.isNotEmpty) {
+      marker.setOnTapListener((NMarker tappedMarker) async {
+        // 현재 InfoWindow가 열려있는지 확인
+        final bool isOpen = await tappedMarker.hasOpenInfoWindow();
+        if (isOpen) {
+          // 이미 열려 있으면 => 닫기
+          final infoWindowId = 'info_${tappedMarker.info.id}';
+          final infoWindowOverlay = NOverlayInfo(
+            type: NOverlayType.infoWindow,
+            id: infoWindowId,
+          );
+          // 지도에서 해당 InfoWindow를 제거하면 닫히는 효과가 난다.
+          await naverMapController!.deleteOverlay(infoWindowOverlay);
+        } else {
+          // 닫혀 있으면 => 열기
+          final infoWindow = NInfoWindow.onMarker(
+            id: 'info_${tappedMarker.info.id}',
+            text: infoText,
+          );
+          await tappedMarker.openInfoWindow(infoWindow);
+        }
+      });
+    }
 
     // 3) 지도에 표시
     await naverMapController!.addOverlay(marker);
 
-    // 4) 마커 목록에 저장
-    _markers[markerId] = marker;
+    // 4) 내부 Map에 저장
+    _markers[stationId] = marker;
 
-    Log.info("커스텀 마커 추가 완료: $lat, $lng / ID: $markerId");
+    Log.info("커스텀 마커 추가 완료: $lat, $lng / ID: $stationId");
   }
 
   //--------------------------------------------------------------------------
-  // (2) 마커에 정보창(NInfoWindow)을 띄우는 메서드
-  //--------------------------------------------------------------------------
-  Future<void> showMarkerInfoWindow(String markerId, String infoText) async {
-    if (naverMapController == null) return;
-
-    // 현재 등록된 마커 목록에서 아이디로 마커를 찾아온다.
-    final marker = _markers[markerId];
-    if (marker == null) {
-      Log.warning("마커($markerId)가 존재하지 않습니다. 먼저 마커를 추가해주세요.");
-      return;
-    }
-
-    // 1) 마커에 표시할 정보창 생성
-    //    - onMarker 생성자를 사용해야 마커 위에 정상적으로 붙는다.
-    final infoWindow = NInfoWindow.onMarker(
-      id: 'info_$markerId', // 정보창 id. markerId와 구분되게 해도 좋다.
-      text: infoText,
-    );
-
-    // 2) 마커에 정보창 표시
-    await marker.openInfoWindow(infoWindow);
-
-    Log.info("마커($markerId)에 정보창 표시 완료: $infoText");
-  }
-
-  //--------------------------------------------------------------------------
-  // (3) 2개의 좌표 사이에 직선을 그리는 메서드 (NPolylineOverlay)
+  // 2개의 좌표 사이에 직선을 그리는 메서드 (NPolylineOverlay)
   //--------------------------------------------------------------------------
   Future<void> drawLineBetween({
     required double startLat,
@@ -175,8 +173,7 @@ class MapController extends GetxController {
   }
 
   //--------------------------------------------------------------------------
-  // (4) 여러 좌표 경로를 잇는 멀티 경로(다중 경로)를 그리는 메서드
-  //     - NMultipartPathOverlay 사용
+  // 여러 좌표 경로를 잇는 멀티 경로(다중 경로)를 그리는 메서드 : NMultipartPathOverlay 사용
   //--------------------------------------------------------------------------
   Future<void> drawMultipartPaths({
     required List<List<NLatLng>> coordinatesList,

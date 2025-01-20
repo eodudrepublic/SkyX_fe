@@ -3,6 +3,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:get/get.dart';
 import 'package:sky_x_fe/view/map/widget/custom_marker.dart';
 import '../../common/utils/logger.dart';
+import '../../model/station_info.dart';
 
 class MapController extends GetxController {
   // NaverMapController를 담아둘 Rxn 멤버
@@ -54,13 +55,23 @@ class MapController extends GetxController {
     //   width: 4.0,
     // );
 
-    // TEST 3) N1 역 마커 추가
-    addStationMarker(
-      lat: 36.37422319491133,
-      lng: 127.3657201432359,
-      stationId: "N1",
-      // infoText: "N1 station",
-    );
+    // // TEST 3) N1 역 마커 추가
+    // addStationMarker(
+    //   lat: 36.37422319491133,
+    //   lng: 127.3657201432359,
+    //   stationId: "N1",
+    //   // infoText: "N1 station",
+    // );
+
+    for (final station in stationList) {
+      addStationMarker(
+        lat: station.lat,
+        lng: station.lng,
+        stationId: station.id,
+        // TODO : infoText 어떻게 하는게 좋을까?
+        // infoText: "정류장 정보: ${station.id}"
+      );
+    }
   }
 
   /// 특정 위도/경도에 기본 마커를 추가하는 메서드

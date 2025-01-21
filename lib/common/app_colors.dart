@@ -16,4 +16,7 @@ class AppColors {
   final Color kaistMediumBlue = const Color(0xFF004187);
   final Color kaistLightBlue = const Color(0xFF5FBEEB);
   final Color kaistDarkGray = const Color(0xFF7C7C7C);
+
+  // 검색 배경 회색
+  final Color searchBackgroundColor = Color(0xFFDADADA);
 }

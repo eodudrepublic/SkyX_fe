@@ -4,6 +4,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:get/get.dart';
+import 'package:sky_x_fe/view/search/search_view.dart';
 import 'common/key.dart';
 import 'common/utils/logger.dart';
 import 'package:sky_x_fe/view/map/map_view.dart';
@@ -51,8 +52,13 @@ class MyApp extends StatelessWidget {
             /// 로그인
             GetPage(name: '/login', page: () => LoginView()),
 
-            /// 지도
+            /// 지도 (홈)
             GetPage(name: '/map', page: () => SkyMapView()),
+
+            /// 검색 (출발지, 도착지 설정)
+            GetPage(name: '/search', page: () => SearchView()),
+
+            // TODO : navi 페이지
           ],
         );
       },

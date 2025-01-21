@@ -20,9 +20,13 @@ class MapController extends GetxController {
   final Map<String, NMarker> _markers = {};
 
   /// onMapReady 콜백 : NaverMap이 준비되면 자동으로 호출되는 함수
-  void onMapReady(NaverMapController controller) {
+  Future<void> onMapReady(NaverMapController controller) async {
     Log.info("네이버 맵 로딩 완료: 컨트롤러 바인딩");
     _naverMapController.value = controller;
+
+    await StationRepository.fetchStationListFromServer();
+    Log.info(
+        "MapController : 정류장 목록 불러오기 완료: 총 ${StationRepository.stationList.length}개");
 
     // 네이버 맵 초기화 작업
     // /// 지도 중점 좌표 위치에 마커 추가
@@ -64,12 +68,12 @@ class MapController extends GetxController {
     // );
 
     // 지도 초기화 작업: stationList의 모든 정류장을 마커로 추가
-    for (final station in stationList) {
+    for (final station in StationRepository.stationList) {
       addStationMarker(
         lat: station.lat,
         lng: station.lng,
         stationId: station.id,
-        captionText: station.id,
+        infoText: station.infoText,
       );
     }
 

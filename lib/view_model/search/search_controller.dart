@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sky_x_fe/common/utils/logger.dart';
-import 'package:sky_x_fe/model/station_info.dart';
+import '../../common/utils/logger.dart';
+import '../../model/station_info.dart';
 
 /// 출발지/도착지 검색 및 선택 로직을 담당하는 컨트롤러
 class RouteSearchController extends GetxController {
@@ -15,8 +15,7 @@ class RouteSearchController extends GetxController {
   RxList<StationInfo> searchList = <StationInfo>[].obs;
 
   /// 전체 StationInfo 목록 (station_info.dart에서 가져옴)
-  /// 실제 프로젝트에서는 station_info.dart import 후, 아래처럼 할당
-  final List<StationInfo> allStations = stationList;
+  final List<StationInfo> allStations = StationRepository.stationList;
 
   @override
   void onInit() {

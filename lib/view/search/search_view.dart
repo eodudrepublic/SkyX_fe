@@ -41,6 +41,7 @@ class SearchView extends GetView<SearchController> {
                   // -> 일단 현재는 서버가 완성되지 않아서, Log.info("출발지 : $startId, 도착지 : $endId"); 로 출력
                   // TODO 2 : 출발지, 도착지에 각각 출발/도착 마커를 찍고, 경로를 그리면 됨. swap 버튼을 누르면 출발지와 도착지가 바꾸어 지도에 다시 그려짐
                   // TODO 3 : 서버에서 받아온 경로를 그리기 -> MapController의 drawMultipartPaths 함수 사용
+                  // 이를 위해 경로와 현재 위치를 표시할 /navi 페이지를 만들어야 함
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 5.sp),
@@ -123,6 +124,8 @@ class SearchView extends GetView<SearchController> {
                 () => SingleChildScrollView(
                   child: Column(
                     children: controller.searchList.map((station) {
+                      // TODO 1 : 리스트 타일 디자인 수정
+                      // TODO 2 : 즐겨찾기(별/하트 모양) 버튼 추가 -> 즐겨찾기한 역은 별/하트 모양이 채워져 있도록
                       return ListTile(
                         title: Text(station.id),
                         onTap: () {

@@ -1,84 +1,135 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../common/server_url.dart';
+import '../common/utils/logger.dart';
+
+/// 서버에서 불러온 건물 정보를 보관할 모델
 class StationInfo {
-  final String id;
-  final double lat;
-  final double lng;
-  final String infoText;
+  final String id; // 서버 buildingID
+  final double lat; // 서버 latitude
+  final double lng; // 서버 longitude
+  final String name; // 서버 buildingName
+  final String infoText; // 지도 InfoWindow 등에 표시할 문구
 
   StationInfo({
     required this.id,
     required this.lat,
     required this.lng,
+    required this.name,
     this.infoText = '',
   });
+
+  /// StationInfo 객체를 문자열로 표현하기 위한 메서드
+  @override
+  String toString() {
+    return 'StationInfo(id: $id, name: $name, lat: $lat, lng: $lng, infoText: $infoText)';
+  }
 }
 
-final List<StationInfo> stationList = [
-  // TODO : infoText 추가
-  StationInfo(id: "지혜관", lat: 36.3758894895, lng: 127.3585762833),
-  StationInfo(id: "신뢰관", lat: 36.3752596506, lng: 127.3589996469),
-  StationInfo(id: "진리관", lat: 36.3747278326, lng: 127.3590417784),
-  StationInfo(id: "성실관", lat: 36.3743120589, lng: 127.3587027684),
-  StationInfo(id: "아름관", lat: 36.3739576008, lng: 127.3566952707),
-  StationInfo(id: "소망관", lat: 36.3737711065, lng: 127.3572822493),
-  StationInfo(id: "사랑관", lat: 36.3738000529, lng: 127.3581488045),
-  StationInfo(id: "교양분관", lat: 36.3737415676, lng: 127.3603661311),
-  StationInfo(id: "교직원 숙소", lat: 36.3748899221, lng: 127.3598309511),
-  StationInfo(id: "유레카관", lat: 36.3755180787, lng: 127.3607142160),
-  StationInfo(id: "반도체설계 교육센터", lat: 36.3751301970, lng: 127.3615844345),
-  StationInfo(id: "대덕분석기술연구원", lat: 36.3754562325, lng: 127.3625387500),
-  StationInfo(id: "LG 이노베이션홀", lat: 36.3754237104, lng: 127.3636028445),
-  StationInfo(id: "fMRI 센터", lat: 36.3754380468, lng: 127.3640737424),
-  StationInfo(id: "동문창업관", lat: 36.3748201754, lng: 127.3642603083),
-  StationInfo(id: "교수회관", lat: 36.3745798468, lng: 127.3647578733),
-  StationInfo(id: "IT융합빌딩(N1)", lat: 36.3742231949, lng: 127.3657201432),
-  StationInfo(
-      id: "산업디자인 학과동(조수미공연예술 연구센터)", lat: 36.3736738858, lng: 127.3626307723),
-  StationInfo(id: "태울관", lat: 36.3730303656, lng: 127.3601260495),
-  StationInfo(id: "장영신 학생회관", lat: 36.3731191875, lng: 127.3605554876),
-  StationInfo(id: "스포츠컴플렉스", lat: 36.3723841159, lng: 127.3622486929),
-  StationInfo(id: "행정분관", lat: 36.3727230623, lng: 127.3634008355),
-  StationInfo(id: "대강당", lat: 36.3722624876, lng: 127.3637218543),
-  StationInfo(id: "인공위성연구소", lat: 36.3725499149, lng: 127.3662444138),
-  StationInfo(id: "계룡관", lat: 36.3725316823, lng: 127.3670466615),
-  StationInfo(id: "정문술빌딩 (양분순빌딩)", lat: 36.3714699034, lng: 127.3620912331),
-  StationInfo(id: "세종관", lat: 36.3711160721, lng: 127.3665636347),
-  StationInfo(id: "기초과학동", lat: 36.3707742340, lng: 127.3648933268),
-  StationInfo(id: "기초과학연구원", lat: 36.3695644956, lng: 127.3673927245),
-  StationInfo(id: "파팔라도 센터", lat: 36.3693846666, lng: 127.3698622176),
-  StationInfo(id: "바이오모델시스템파크", lat: 36.3683307523, lng: 127.3682554349),
-  StationInfo(id: "반도체동", lat: 36.3692516631, lng: 127.3662317400),
-  StationInfo(id: "미래융합소자동", lat: 36.3688473177, lng: 127.3665808491),
-  StationInfo(id: "정보전자공학동", lat: 36.3687845108, lng: 127.3657559738),
-  StationInfo(id: "나노종합기술원", lat: 36.3682700625, lng: 127.3667452848),
-  StationInfo(id: "KI빌딩", lat: 36.3681662247, lng: 127.3638643591),
-  StationInfo(id: "산업경영학동", lat: 36.3673155146, lng: 127.3643088946),
-  StationInfo(id: "자연과학동", lat: 36.3698278970, lng: 127.3641896760),
-  StationInfo(id: "학술문화관", lat: 36.3696886427, lng: 127.3625677041),
-  StationInfo(id: "창의학습관", lat: 36.3705330911, lng: 127.3626997696),
-  StationInfo(id: "KAIST 본원", lat: 36.3705148669, lng: 127.3612789231),
-  StationInfo(id: "기계공학동", lat: 36.3724377052, lng: 127.3586746619),
-  StationInfo(id: "외국인교수아파트", lat: 36.3718365079, lng: 127.3563039250),
-  StationInfo(id: "풍동실험동", lat: 36.3714068937, lng: 127.3568257039),
-  StationInfo(id: "나눔관", lat: 36.3712271426, lng: 127.3559083437),
-  StationInfo(id: "노천극장", lat: 36.3708310231, lng: 127.3580376913),
-  StationInfo(id: "미르관(나래관)", lat: 36.3706600255, lng: 127.3556996103),
-  StationInfo(id: "인터내셔널 빌리지A", lat: 36.3697250000, lng: 127.3555394551),
-  StationInfo(id: "인터내셔널 빌리지B", lat: 36.3699801188, lng: 127.3559082302),
-  StationInfo(id: "인터내셔널 빌리지C", lat: 36.3695265000, lng: 127.3562794664),
-  StationInfo(id: "스타트업 빌리지", lat: 36.3692020167, lng: 127.3558211183),
-  StationInfo(id: "예지관", lat: 36.3691075550, lng: 127.3565226992),
-  StationInfo(id: "학술문화원(희망관, 다솜관)", lat: 36.3683855203, lng: 127.3568899073),
-  StationInfo(id: "갈릴레이관", lat: 36.3673315996, lng: 127.3582445130),
-  StationInfo(id: "나들관", lat: 36.3672601650, lng: 127.3572719790),
-  StationInfo(id: "여울관", lat: 36.3668756628, lng: 127.3577744290),
-  StationInfo(id: "키움관", lat: 36.3663587885, lng: 127.3580924135),
-  StationInfo(id: "융합콘텐츠동", lat: 36.3661048175, lng: 127.3586400230),
-  StationInfo(id: "한국과학기술정보연구원 대전본원", lat: 36.3656820521, lng: 127.3591283548),
-  StationInfo(id: "슈퍼컴퓨팅지원동", lat: 36.3648125490, lng: 127.3590853607),
-  StationInfo(
-      id: "인터내셔널 센터(석박사 학생회관)", lat: 36.3673311088, lng: 127.3606541365),
-  StationInfo(id: "메타융합관", lat: 36.3662036238, lng: 127.3602450133),
-  StationInfo(id: "응용과학동", lat: 36.3660842567, lng: 127.3617236432),
-  StationInfo(id: "지오센트리퓨지실험동", lat: 36.3655144321, lng: 127.3624118418),
-  StationInfo(id: "교육지원동", lat: 36.3701047218, lng: 127.3598228426),
-];
+/// StationInfo와 즐겨찾기 목록을 관리하는 역할
+class StationRepository {
+  /// 서버에서 불러온 전체 건물(정류장) 목록
+  static List<StationInfo> stationList = [];
+
+  /// 사용자 즐겨찾기 목록
+  static List<StationInfo> favoriteList = [];
+
+  /// 모든 건물(정류장) 목록 불러오기
+  static Future<void> fetchStationListFromServer() async {
+    final url = '$serverUrl:3001/api/building/buildingList';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        // 서버 응답을 StationInfo 리스트로 변환
+        stationList = data.map((json) {
+          return StationInfo(
+            id: json['buildingID'],
+            lat: double.parse(json['latitude']),
+            lng: double.parse(json['longitude']),
+            name: json['buildingName'],
+            infoText: "정류장 이름: ${json['buildingName']}",
+          );
+        }).toList();
+
+        Log.info("StationRepository : 건물 목록 불러오기 성공: 총 ${stationList.length}개");
+
+        // // 전체 건물 목록 출력 (디버깅용)
+        // Log.info("전체 건물 목록:");
+        // for (var station in stationList) {
+        //   Log.info(station.toString());
+        // }
+      } else {
+        Log.error("건물 목록 불러오기 실패: 상태코드=${response.statusCode}");
+      }
+    } catch (e) {
+      Log.error("건물 목록 불러오기 에러: $e");
+    }
+  }
+
+  /// 사용자 즐겨찾기 목록 불러오기
+  static Future<void> fetchFavoriteList(String userId) async {
+    final url = '$serverUrl:3001/api/search/favorite?user_id=$userId';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        // 서버 응답을 StationInfo 리스트로 변환
+        favoriteList = data.map((json) {
+          return StationInfo(
+            id: json['buildingID'],
+            lat: double.parse(json['latitude']),
+            lng: double.parse(json['longitude']),
+            name: json['buildingName'],
+            infoText: "정류장 이름: ${json['buildingName']}",
+          );
+        }).toList();
+
+        Log.info("즐겨찾기 불러오기 성공: 총 ${favoriteList.length}개");
+
+        // // 전체 즐겨찾기 목록 출력 (디버깅용)
+        // Log.info("전체 즐겨찾기 목록:");
+        // for (var favorite in favoriteList) {
+        //   Log.info(favorite.toString());
+        // }
+      } else {
+        Log.error("즐겨찾기 불러오기 실패: 상태코드=${response.statusCode}");
+      }
+    } catch (e) {
+      Log.error("즐겨찾기 불러오기 에러: $e");
+    }
+  }
+
+  /// 즐겨찾기 추가: 추가 후, 서버 즐겨찾기 목록을 다시 불러와 갱신
+  static Future<void> addFavorite(String userId, StationInfo station) async {
+    final url = '$serverUrl:3001/api/search/postFavorite';
+    final body = {
+      "user_id": userId, // 사용자 ID
+      "building_id": station.id, // buildingID
+      "favorite_name": station.name
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        // 즐겨찾기 추가 성공 → 최신 즐겨찾기 목록 다시 불러오기
+        Log.info("즐겨찾기 등록 성공: ${station.name}");
+        await fetchFavoriteList(userId);
+      } else {
+        Log.error(
+            "즐겨찾기 등록 실패: 상태코드=${response.statusCode}, 응답=${response.body}");
+      }
+    } catch (e) {
+      Log.error("즐겨찾기 등록 에러: $e");
+    }
+  }
+}

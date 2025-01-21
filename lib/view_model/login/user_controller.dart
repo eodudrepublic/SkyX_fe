@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../../common/server_url.dart';
 import '../../common/utils/logger.dart';
+import '../../model/station_info.dart';
 import '../../model/user_model.dart';
 import '../../service/kakao_login_api.dart';
 import '../../service/websocket_service.dart';
@@ -41,14 +42,17 @@ class UserController extends GetxController {
         // 1) 서버에 사용자 정보 등록 (POST)
         final bool isRegistered = await _registerUser(appUser);
 
-        // 2) 등록 성공 시, WebSocket 연결
+        // 2) 즐겨찾기 목록 불러오기
+        await StationRepository.fetchFavoriteList(appUser.id!);
+
+        // 3) 등록 성공 시, WebSocket 연결
         if (isRegistered) {
           // 웹소켓 연결 시도
           _wsService.connect();
           // 필요 시 바로 메시지 구독도 실행
           _wsService.listenToMessages();
 
-          // 3) 모든 과정 성공 시, '로그인 성공' 출력 및 화면 전환
+          // 4) 모든 과정 성공 시, '로그인 성공' 출력 및 화면 전환
           Log.info('로그인 성공');
           Get.offNamed('/map');
         } else {

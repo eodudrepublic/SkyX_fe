@@ -26,3 +26,26 @@ class StationMarker extends NMarker {
           // TODO : 마커, 캡션 보여지는 줌 레벨 범위 지정
         );
 }
+
+class PlaceMarker extends NMarker {
+  final double lat;
+  final double lng;
+  final String placeId;
+  final String captionText;
+
+  PlaceMarker({
+    required this.lat,
+    required this.lng,
+    required this.placeId,
+    required this.captionText,
+  }) : super(
+          id: placeId,
+          position: NLatLng(lat, lng),
+          icon: NOverlayImage.fromAssetImage('assets/icons/place_icon.png'),
+          size: Size(35, 35),
+          anchor: NPoint(0.5, 0.75),
+          caption: NOverlayCaption(
+            text: captionText,
+          ),
+        );
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:get/get.dart';
+import '../../common/app_colors.dart';
 import '../../common/utils/logger.dart';
 import '../../model/station_info.dart';
 import '../../view/map/widget/custom_marker.dart';
@@ -59,27 +60,23 @@ class NaviController extends GetxController {
     // 경로 표시 (단일 경로라면 coordinatesList에 routePoints 하나만 넣으면 됨)
     await drawMultipartPaths(
       coordinatesList: [routePoints],
-      pathId: 'navi_path',
     );
   }
 
-  /// station 마커를 추가하는 메서드
-  // TODO : 출발지/도착지 마커 따로 만들어서 사용
+  /// 출발지/도착지 마커를 추가하는 메서드
   Future<void> addStationMarker({
     required double lat,
     required double lng,
     required String stationId,
-    String captionText = '',
+    required String captionText,
   }) async {
     if (naverMapController == null) return;
 
-    // StationMarker 재사용
-    final marker = StationMarker(
+    final marker = PlaceMarker(
       lat: lat,
       lng: lng,
-      stationId: stationId,
+      placeId: stationId,
       captionText: captionText,
-      infoText: '', // 필요에 따라 정보창 텍스트 추가
     );
 
     await naverMapController!.addOverlay(marker);
@@ -92,11 +89,8 @@ class NaviController extends GetxController {
   // TODO : 디자인 수정
   Future<void> drawMultipartPaths({
     required List<List<NLatLng>> coordinatesList,
-    String pathId = '',
     double width = 4.0,
     double outlineWidth = 1.0,
-    Color defaultColor = Colors.blue,
-    Color defaultOutlineColor = Colors.black,
   }) async {
     if (naverMapController == null) return;
 
@@ -105,16 +99,14 @@ class NaviController extends GetxController {
         .map(
           (coords) => NMultipartPath(
             coords: coords,
-            color: defaultColor,
-            outlineColor: defaultOutlineColor,
+            color: AppColors.instance.kaistBlue,
+            outlineColor: AppColors.instance.kaistMediumBlue,
           ),
         )
         .toList();
 
     final multipartOverlay = NMultipartPathOverlay(
-      id: pathId.isNotEmpty
-          ? pathId
-          : 'multipart_${DateTime.now().millisecondsSinceEpoch}',
+      id: 'navi_path_${DateTime.now().millisecondsSinceEpoch}',
       paths: paths,
       width: width,
       outlineWidth: outlineWidth,

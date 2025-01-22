@@ -134,46 +134,6 @@ class MapController extends GetxController {
     Log.info("커스텀 마커 추가 완료: $lat, $lng / ID: $stationId");
   }
 
-  /// 여러 좌표 경로를 잇는 멀티 경로(다중 경로)를 그리는 메서드 : NMultipartPathOverlay 사용
-  Future<void> drawMultipartPaths({
-    required List<List<NLatLng>> coordinatesList,
-    String pathId = '',
-    double width = 4.0,
-    double outlineWidth = 1.0,
-    Color defaultColor = Colors.blue,
-    Color defaultOutlineColor = Colors.black,
-  }) async {
-    if (naverMapController == null) return;
-
-    // 경로 세트(List<NLatLng>)를 NMultipartPath 형태로 변환
-    final paths = coordinatesList
-        .map(
-          (coords) => NMultipartPath(
-            coords: coords,
-            color: defaultColor,
-            outlineColor: defaultOutlineColor,
-          ),
-        )
-        .toList();
-
-    // 멀티파트 경로 오버레이 생성
-    final multipartOverlay = NMultipartPathOverlay(
-      id: pathId.isNotEmpty
-          ? pathId
-          : 'multipart_${DateTime.now().millisecondsSinceEpoch}',
-      paths: paths,
-      width: width,
-      outlineWidth: outlineWidth,
-    );
-
-    // 지도에 추가
-    await naverMapController!.addOverlay(multipartOverlay);
-
-    Log.info(
-      "멀티 경로 추가 완료: pathId=${multipartOverlay.info.id}, 총 경로 수=${paths.length}",
-    );
-  }
-
   /// 내 위치가 지도 범위 안에 있다면, 자동으로 표시하는 메서드
   Future<void> showMyLocationIfWithinBounds() async {
     if (naverMapController == null) return;
@@ -253,6 +213,48 @@ class MapController extends GetxController {
 
     Log.info(
         "마커 추가 완료: ${position.latitude}, ${position.longitude} / ID: $markerId");
+  }
+
+  //--------------------------------------------------------------------------
+  // 여러 좌표 경로를 잇는 멀티 경로(다중 경로)를 그리는 메서드 : NMultipartPathOverlay 사용
+  //--------------------------------------------------------------------------
+  Future<void> drawMultipartPaths({
+    required List<List<NLatLng>> coordinatesList,
+    String pathId = '',
+    double width = 4.0,
+    double outlineWidth = 1.0,
+    Color defaultColor = Colors.blue,
+    Color defaultOutlineColor = Colors.black,
+  }) async {
+    if (naverMapController == null) return;
+
+    // 경로 세트(List<NLatLng>)를 NMultipartPath 형태로 변환
+    final paths = coordinatesList
+        .map(
+          (coords) => NMultipartPath(
+            coords: coords,
+            color: defaultColor,
+            outlineColor: defaultOutlineColor,
+          ),
+        )
+        .toList();
+
+    // 멀티파트 경로 오버레이 생성
+    final multipartOverlay = NMultipartPathOverlay(
+      id: pathId.isNotEmpty
+          ? pathId
+          : 'multipart_${DateTime.now().millisecondsSinceEpoch}',
+      paths: paths,
+      width: width,
+      outlineWidth: outlineWidth,
+    );
+
+    // 지도에 추가
+    await naverMapController!.addOverlay(multipartOverlay);
+
+    Log.info(
+      "멀티 경로 추가 완료: pathId=${multipartOverlay.info.id}, 총 경로 수=${paths.length}",
+    );
   }
 
   //--------------------------------------------------------------------------

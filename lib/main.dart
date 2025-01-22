@@ -4,7 +4,9 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:get/get.dart';
+import 'package:sky_x_fe/view/navi/navi_view.dart';
 import 'package:sky_x_fe/view/search/search_view.dart';
+import 'package:sky_x_fe/view_model/navi/test_page.dart';
 import 'common/key.dart';
 import 'common/utils/logger.dart';
 import 'package:sky_x_fe/view/map/map_view.dart';
@@ -47,7 +49,7 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
           title: 'SkyX',
           debugShowCheckedModeBanner: false,
-          initialRoute: '/map',
+          initialRoute: '/test_navi',
           getPages: [
             /// 로그인
             GetPage(name: '/login', page: () => LoginView()),
@@ -58,7 +60,9 @@ class MyApp extends StatelessWidget {
             /// 검색 (출발지, 도착지 설정)
             GetPage(name: '/search', page: () => SearchView()),
 
-            // TODO : navi 페이지
+            /// 네비게이션 (경로 안내)
+            GetPage(name: '/navi', page: () => NaviView()),
+            GetPage(name: '/test_navi', page: () => const NaviTestPage()),
           ],
         );
       },

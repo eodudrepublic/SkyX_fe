@@ -1,6 +1,8 @@
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter/material.dart';
 
+import '../../../model/user_model.dart';
+
 class StationMarker extends NMarker {
   final double lat;
   final double lng;
@@ -47,5 +49,21 @@ class PlaceMarker extends NMarker {
           caption: NOverlayCaption(
             text: captionText,
           ),
+        );
+}
+
+class UserMarker extends NMarker {
+  final double lat;
+  final double lng;
+
+  UserMarker({
+    required this.lat,
+    required this.lng,
+  }) : super(
+          id: AppUser().id ?? 'user_marker',
+          position: NLatLng(lat, lng),
+          icon: NOverlayImage.fromAssetImage('assets/icons/user_icon.png'),
+          size: Size(35, 35),
+          // anchor: NPoint(0.5, 0.75),
         );
 }

@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:marquee/marquee.dart';
+import '../../common/app_colors.dart';
 import '../../common/utils/logger.dart';
 import '../../view_model/route/route_controller.dart';
 
@@ -12,13 +14,18 @@ class RouteView extends GetView<RouteController> {
   @override
   Widget build(BuildContext context) {
     /// NaviController 주입
-    final RouteController naviController = Get.put(RouteController());
+    final RouteController routeController = Get.put(RouteController());
+
+    /// RouteController의 데이터 가져오기
+    final routePoints = routeController.routePoints;
+    final startStation = routeController.startStation;
+    final endStation = routeController.endStation;
 
     /// 출발지, 도착지 좌표를 이용해 지도 제한 영역 설정
-    final lat1 = naviController.startStation.lat;
-    final lng1 = naviController.startStation.lng;
-    final lat2 = naviController.endStation.lat;
-    final lng2 = naviController.endStation.lng;
+    final lat1 = routeController.startStation.lat;
+    final lng1 = routeController.startStation.lng;
+    final lat2 = routeController.endStation.lat;
+    final lng2 = routeController.endStation.lng;
 
     // 지도 중점 (출발지와 도착지의 중간점)
     final centerLat = (lat1 + lat2) / 2;
@@ -39,79 +46,116 @@ class RouteView extends GetView<RouteController> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// 상단 영역 : 뒤로가기 버튼 + 출발지/도착지 표시
-            Container(
-                color: Colors.white,
-                height: 0.07.sh,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.sp),
+        child: Stack(children: [
+          Positioned.fill(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// 상단 영역 : 뒤로가기 버튼 + 출발지/도착지 표시
+                Container(
+                    color: Colors.white,
+                    height: 0.07.sh,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10.sp),
 
-                      /// 뒤로가기 아이콘
-                      child: GestureDetector(
-                        onTap: () {
-                          Log.info('NaviView -> 뒤로가기 (검색 화면으로)');
-                          Get.back();
-                        },
-                        child: Icon(
-                          Icons.arrow_back,
-                          size: 30.sp,
+                          /// 뒤로가기 아이콘
+                          child: GestureDetector(
+                            onTap: () {
+                              Log.info('RouteView -> 뒤로가기 (검색 화면으로)');
+                              Get.back();
+                            },
+                            child: Icon(
+                              Icons.arrow_back,
+                              size: 30.sp,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
 
-                    /// 출발지 → 도착지 텍스트
-                    Expanded(
-                      child: _buildRouteText(
-                        startName: naviController.startStation.name,
-                        endName: naviController.endStation.name,
-                      ),
-                    ),
-                    SizedBox(width: 10.sp),
-                  ],
-                )),
+                        /// 출발지 → 도착지 텍스트
+                        Expanded(
+                          child: _buildRouteText(
+                            startName: routeController.startStation.name,
+                            endName: routeController.endStation.name,
+                          ),
+                        ),
+                        SizedBox(width: 10.sp),
+                      ],
+                    )),
 
-            /// 지도 영역
-            Expanded(
-              child: NaverMap(
-                // 지도 옵션
-                options: NaverMapViewOptions(
-                  initialCameraPosition: NCameraPosition(
-                    target: center,
-                    zoom: 15,
-                    bearing: 0,
-                    tilt: 0,
+                /// 지도 영역
+                Expanded(
+                  child: NaverMap(
+                    // 지도 옵션
+                    options: NaverMapViewOptions(
+                      initialCameraPosition: NCameraPosition(
+                        target: center,
+                        zoom: 15,
+                        bearing: 0,
+                        tilt: 0,
+                      ),
+                      extent: NLatLngBounds(
+                        northEast: northEast,
+                        southWest: southWest,
+                      ),
+                      mapType: NMapType.basic,
+                      activeLayerGroups: [
+                        NLayerGroup.building,
+                        NLayerGroup.transit,
+                        NLayerGroup.traffic,
+                      ],
+                      minZoom: 14.0,
+                      rotationGesturesEnable: true,
+                      scrollGesturesEnable: true,
+                      tiltGesturesEnable: true,
+                      zoomGesturesEnable: true,
+                      stopGesturesEnable: false,
+                      logoAlign: NLogoAlign.leftBottom,
+                      logoMargin: EdgeInsets.only(bottom: 10.sp, left: 10.sp),
+                    ),
+                    onMapReady: routeController.onMapReady,
                   ),
-                  extent: NLatLngBounds(
-                    northEast: northEast,
-                    southWest: southWest,
+                )
+              ],
+            ),
+          ),
+          Positioned(
+              bottom: 10,
+              right: 0,
+              left: 0,
+              child: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    Log.info('경로 안내 버튼 클릭 : route -> navi');
+                    controller.sendStartNavigation();
+                    Get.toNamed('/navi', arguments: {
+                      'routePoints': routePoints,
+                      'startStation': startStation,
+                      'endStation': endStation,
+                    });
+                  },
+                  // TODO : 버튼 스타일 수정 필요 -> kaist 파란색들 조합해서 / 배경은 투명하게 + 터치하면 배경 진해지도록
+                  child: Container(
+                    width: 70.sp,
+                    height: 70.sp,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      // TODO : 배경 색상 수정 필요
+                      color: AppColors.instance.buttonBackgroundColor,
+                      borderRadius: BorderRadius.circular(10.sp),
+                    ),
+                    child: Icon(
+                      CupertinoIcons.location_fill,
+                      color: Colors.black,
+                      size: 30.sp,
+                    ),
                   ),
-                  mapType: NMapType.basic,
-                  activeLayerGroups: [
-                    NLayerGroup.building,
-                    NLayerGroup.transit,
-                    NLayerGroup.traffic,
-                  ],
-                  minZoom: 14.0,
-                  rotationGesturesEnable: true,
-                  scrollGesturesEnable: true,
-                  tiltGesturesEnable: true,
-                  zoomGesturesEnable: true,
-                  stopGesturesEnable: false,
-                  logoAlign: NLogoAlign.leftBottom,
-                  logoMargin: EdgeInsets.only(bottom: 10.sp, left: 10.sp),
                 ),
-                onMapReady: naviController.onMapReady,
-              ),
-            )
-          ],
-        ),
+              ))
+        ]),
       ),
     );
   }

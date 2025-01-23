@@ -7,6 +7,8 @@ import '../../common/utils/logger.dart';
 import '../../common/server_url.dart';
 import '../../model/station_info.dart';
 import '../../model/user_model.dart';
+import '../../model/websocket.dart';
+import '../../service/websocket_service.dart';
 
 /// 출발지/도착지 검색 및 선택 로직을 담당하는 컨트롤러
 class RouteSearchController extends GetxController {
@@ -25,6 +27,9 @@ class RouteSearchController extends GetxController {
 
   /// 전체 StationInfo 목록 (station_info.dart에서 가져옴)
   final List<StationInfo> allStations = StationRepository.stationList;
+
+  /// WebSocket 통신 객체
+  final WebSocketService _wsService = Get.find<WebSocketService>();
 
   @override
   void onInit() {
@@ -172,8 +177,8 @@ class RouteSearchController extends GetxController {
 
     // GET 요청용 url 생성
     final userId = AppUser().id ?? "asdf"; // TODO : 사용자 ID (임시)
-    final baseUrl = 'http://172.10.7.60:3001';
-    final endpoint = '/api/show/flight';
+    final baseUrl = serverUrl;
+    final endpoint = ':3001/api/show/flight';
     final queryParams =
         '?user_id=$userId&originID=${startStation.id}&destinationID=${endStation.id}';
 
@@ -207,6 +212,20 @@ class RouteSearchController extends GetxController {
     } catch (e) {
       Log.error("경로 요청 에러: $e");
     }
+  }
+
+  /// 웹소캣 서버로 "startAnimation" 전송
+  void sendStartAnimation() {
+    Log.info("WebSocket : sendStartAnimation");
+    final body = {
+      "type": "startAnimation",
+      "payload": {
+        "latitude": 0,
+        "longitude": 0,
+        "altitude": 0,
+      }
+    };
+    _wsService.sendJsonMessage(body);
   }
 
   @override

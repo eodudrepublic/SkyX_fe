@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import '../../common/app_colors.dart';
 import '../../common/utils/logger.dart';
 import '../../model/station_info.dart';
+import '../../model/websocket.dart';
+import '../../service/websocket_service.dart';
 import '../../view/map/widget/custom_marker.dart';
 
 class RouteController extends GetxController {
@@ -17,6 +19,9 @@ class RouteController extends GetxController {
 
   /// 마커 목록
   final Map<String, NMarker> _markers = {};
+
+  /// WebSocket 통신 객체
+  final WebSocketService _wsService = Get.find<WebSocketService>();
 
   @override
   void onInit() {
@@ -116,5 +121,19 @@ class RouteController extends GetxController {
     Log.info(
       "NaviController : 경로 표시 완료 (pathId=${multipartOverlay.info.id})",
     );
+  }
+
+  /// 웹소캣 서버로 "startAnimation" 전송
+  void sendStartNavigation() {
+    Log.info("WebSocket : sendStartNavigation");
+    final body = {
+      "type": "startNavigation",
+      "payload": {
+        "latitude": 0,
+        "longitude": 0,
+        "altitude": 0,
+      }
+    };
+    _wsService.sendJsonMessage(body);
   }
 }

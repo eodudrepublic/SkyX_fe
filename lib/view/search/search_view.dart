@@ -170,8 +170,12 @@ class SearchView extends GetView<RouteSearchController> {
                                 station.name,
                                 style: TextStyle(
                                   fontFamily: 'SCDream',
+                                  fontSize: 16.sp,
                                 ),
                               ),
+                              // TODO : 즐겨찾기 기능 추가
+                              trailing:
+                                  Icon(Icons.star_outline_rounded, size: 20.sp),
                               onTap: () {
                                 // 리스트에서 해당 역을 선택하면, 출발/도착 중 포커스된 곳에 값 대입
                                 controller.selectStation(station);
@@ -186,7 +190,7 @@ class SearchView extends GetView<RouteSearchController> {
               ),
             ),
 
-            /// 안내 시작 버튼 (Obx에서 RxString을 참조)
+            /// 경로 확인 버튼 (Obx에서 RxString을 참조)
             Positioned(
               bottom: 10,
               left: 0,
@@ -201,6 +205,7 @@ class SearchView extends GetView<RouteSearchController> {
                     return GestureDetector(
                       onTap: () {
                         Log.info('안내 시작 : search -> navi');
+                        controller.sendStartAnimation();
                         controller.startNavigation();
                       },
                       // TODO : 버튼 스타일 수정 필요 -> kaist 파란색들 조합해서 / 배경은 투명하게 + 터치하면 배경 진해지도록

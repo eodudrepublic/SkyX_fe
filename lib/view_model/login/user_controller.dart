@@ -15,7 +15,7 @@ class UserController extends GetxController {
   final KakaoLoginApi kakaoLoginApi;
 
   // WebSocketService
-  late final WebSocketService _wsService;
+  final _wsService = Get.find<WebSocketService>();
 
   UserController({required this.kakaoLoginApi});
 
@@ -24,10 +24,6 @@ class UserController extends GetxController {
     super.onInit();
     // 싱글톤 인스턴스로 초기화
     user.value = AppUser();
-
-    // WebSocketModel, WebSocketService 초기화
-    WebSocketModel wsModel = WebSocketModel();
-    _wsService = WebSocketService(wsModel);
   }
 
   // 카카오 로그인
@@ -74,9 +70,6 @@ class UserController extends GetxController {
       await kakaoLoginApi.logout();
       AppUser().clearUser();
       user.value = AppUser();
-
-      // 웹소켓 연결 해제
-      _wsService.closeConnection();
 
       Get.snackbar('성공', '로그아웃에 성공했습니다.');
     } catch (error) {

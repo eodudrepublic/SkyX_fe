@@ -12,6 +12,7 @@ class WebSocketModel {
 
   /// 실제 WebSocket 통신을 담당하는 WebSocketChannel
   WebSocketChannel? _channel;
+  WebSocketChannel? get channel => _channel;
 
   /// 연결 상태 변화를 감지하기 위한 StreamController
   final StreamController<bool> _connectionStatusController =

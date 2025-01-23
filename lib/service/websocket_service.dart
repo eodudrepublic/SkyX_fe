@@ -65,10 +65,6 @@ class WebSocketService {
   }
 
   WebSocketChannel? _getChannel() {
-    // _webSocketModel.stream 자체는 Stream<dynamic>이므로
-    // WebSocketChannel을 직접 받을 수 있는 인터페이스는 따로 없음.
-    // 단, 실사용시엔 Model 내부에서 channel을 바로 사용하는 편이 나을 수 있음.
-    // 여기서는 예시상 편의 메서드만 남겨둠.
-    return null;
+    return _webSocketModel.channel;
   }
 }

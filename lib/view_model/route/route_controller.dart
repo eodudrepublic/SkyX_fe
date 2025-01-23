@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:get/get.dart';
 import '../../common/app_colors.dart';
@@ -6,7 +5,7 @@ import '../../common/utils/logger.dart';
 import '../../model/station_info.dart';
 import '../../view/map/widget/custom_marker.dart';
 
-class NaviController extends GetxController {
+class RouteController extends GetxController {
   /// 출발지, 도착지, 그리고 서버에서 받아온 경로 포인트
   late StationInfo startStation;
   late StationInfo endStation;
@@ -24,7 +23,7 @@ class NaviController extends GetxController {
     super.onInit();
 
     /// Get.arguments로부터 필요한 값들을 가져옴
-    // /search에서 Get.toNamed('/navi', arguments: {...}) 형태로 넘겨줄 예정
+    // /search에서 Get.toNamed('/route', arguments: {...}) 형태로 넘겨줄 예정
     final args = Get.arguments;
     if (args == null ||
         args['startStation'] == null ||

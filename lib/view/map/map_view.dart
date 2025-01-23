@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -78,19 +79,31 @@ class SkyMapView extends GetView<MapController> {
             ),
 
             Positioned(
-                top: 0,
+                bottom: 10,
                 right: 0,
+                left: 0,
                 // TODO : 경로 탐색 버튼 스타일 수정 필요
-                child: Container(
-                  padding: EdgeInsets.only(top: 10.sp, right: 10.sp),
+                child: Center(
                   child: GestureDetector(
                     onTap: () {
                       Log.info('경로 탐색 버튼 클릭 : map -> search');
                       Get.toNamed('/search');
                     },
-                    child: Icon(
-                      Icons.search,
-                      size: 50.sp,
+                    // TODO : 버튼 스타일 수정 필요 -> kaist 파란색들 조합해서 / 배경은 투명하게 + 터치하면 배경 진해지도록
+                    child: Container(
+                      width: 70.sp,
+                      height: 70.sp,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        // TODO : 배경 색상 수정 필요
+                        color: AppColors.instance.buttonBackgroundColor,
+                        borderRadius: BorderRadius.circular(10.sp),
+                      ),
+                      child: Icon(
+                        CupertinoIcons.location_fill,
+                        color: Colors.black,
+                        size: 30.sp,
+                      ),
                     ),
                   ),
                 ))

@@ -19,4 +19,5 @@ class AppColors {
 
   // 검색 배경 회색
   final Color searchBackgroundColor = Color(0xFFDADADA);
+  final Color buttonBackgroundColor = Color(0x99DADADA);
 }

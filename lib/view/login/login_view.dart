@@ -19,6 +19,9 @@ class LoginView extends StatelessWidget {
     final UserController userController =
         Get.put(UserController(kakaoLoginApi: kakaoLoginApi));
 
+    // Log.info(
+    //     "1.sw : ${1.sw}, 1.sh : ${1.sh}, 1.w : ${1.w}, 1.h : ${1.h}, 1.sp : ${1.sp}");
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
@@ -35,6 +38,7 @@ class LoginView extends StatelessWidget {
               child: Text("서비스 사용을 위해\n로그인이 필요해요",
                   style: TextStyle(
                       fontSize: 25.sp,
+                      fontFamily: 'SCDream',
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                   textAlign: TextAlign.start),
@@ -121,7 +125,10 @@ class LoginView extends StatelessWidget {
               Text(
                 '카카오 로그인',
                 style: TextStyle(
-                    color: AppColors.instance.kakaotalkLabel, fontSize: 25.sp),
+                  color: AppColors.instance.kakaotalkLabel,
+                  fontSize: 25.sp,
+                  fontFamily: 'SCDream',
+                ),
               ),
             ],
           ),

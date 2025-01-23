@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import '../../common/utils/logger.dart';
-import '../../model/station_info.dart';
+import '../common/utils/logger.dart';
+import '../model/station_info.dart';
 
 class NaviTestPage extends StatelessWidget {
   const NaviTestPage({super.key});
@@ -44,10 +44,10 @@ class NaviTestPage extends StatelessWidget {
                     NLatLng(36.3722624876, 127.3637218543),
                   ];
 
-                  Log.info("버튼 클릭 -> /navi로 이동 (테스트 arguments)");
+                  Log.info("버튼 클릭 -> /route로 이동 (테스트 arguments)");
 
                   // 실제 코드에서도 마찬가지로 arguments로 데이터 전달
-                  Get.toNamed('/navi', arguments: {
+                  Get.toNamed('/route', arguments: {
                     'startStation': startStation,
                     'endStation': endStation,
                     'routePoints': routePoints,

@@ -170,46 +170,36 @@ class RouteSearchController extends GetxController {
       return;
     }
 
-    // 서버 요청 준비
-    // TODO : userId는 현재 임시로 "asdf"로 설정되어 있음. -> 나중에는 그냥 AppUser().id로 변경
-    final userId = AppUser().id ?? "asdf"; // 사용자 ID
-    final url = '$serverUrl:3001/api/path/single';
-    final body = {
-      "user_id": userId,
-      "originID": startStation.id,
-      "destinationID": endStation.id,
-    };
+    // GET 요청용 url 생성
+    final userId = AppUser().id ?? "asdf"; // TODO : 사용자 ID (임시)
+    final baseUrl = 'http://172.10.7.60:3001';
+    final endpoint = '/api/show/flight';
+    final queryParams =
+        '?user_id=$userId&originID=${startStation.id}&destinationID=${endStation.id}';
+
+    final url = '$baseUrl$endpoint$queryParams';
 
     try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(body),
-      );
+      final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        final List<dynamic> data = jsonDecode(response.body);
 
-        if (data['ok'] == true && data['path'] != null) {
-          final pathData = data['path'] as List<dynamic>;
-          // lat, lon, alt가 있는데 alt는 무시하고 lat/lon만 사용
-          final routePoints = pathData.map((p) {
-            final lat = p['lat'] as double;
-            final lon = p['lon'] as double;
-            return NLatLng(lat, lon);
-          }).toList();
+        // lat, lon, alt가 있는데 alt는 무시하고 lat/lon만 사용
+        final routePoints = data.map((p) {
+          final lat = p['lat'] as double;
+          final lon = p['lon'] as double;
+          return NLatLng(lat, lon);
+        }).toList();
 
-          Log.info("경로 요청 성공 -> /navi 페이지로 이동합니다.");
+        Log.info("경로 요청 성공 -> /route 페이지로 이동합니다.");
 
-          // /navi로 이동, 출발/도착 StationInfo + 경로 점들을 함께 전달
-          Get.toNamed('/navi', arguments: {
-            'startStation': startStation,
-            'endStation': endStation,
-            'routePoints': routePoints,
-          });
-        } else {
-          Log.error("경로 요청 실패: 응답 ok=false 또는 path=null");
-        }
+        // /route로 이동, 출발/도착 StationInfo + 경로 점들을 함께 전달
+        Get.toNamed('/route', arguments: {
+          'startStation': startStation,
+          'endStation': endStation,
+          'routePoints': routePoints,
+        });
       } else {
         Log.error(
             "경로 요청 실패: status=${response.statusCode}, body=${response.body}");

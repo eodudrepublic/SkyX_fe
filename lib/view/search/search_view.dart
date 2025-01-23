@@ -29,18 +29,19 @@ class SearchView extends GetView<RouteSearchController> {
                   /// 상단: 출발지, 도착지 입력 영역
                   Container(
                     color: Colors.white,
+                    padding: EdgeInsets.only(bottom: 20.sp),
                     child: Row(
                       children: [
-                        /// 왼쪽 X 버튼
+                        /// 출발지 <-> 도착지 swap 버튼
                         Container(
-                          padding: EdgeInsets.all(5.sp),
                           alignment: Alignment.center,
+                          padding: EdgeInsets.symmetric(horizontal: 10.sp),
                           child: GestureDetector(
-                            onTap: () {
-                              Log.info('검색 화면 닫기');
-                              Get.back();
-                            },
-                            child: Icon(CupertinoIcons.xmark, size: 30.sp),
+                            onTap: () => controller.swapStartEnd(),
+                            child: Icon(
+                              CupertinoIcons.arrow_up_arrow_down,
+                              size: 22.sp,
+                            ),
                           ),
                         ),
 
@@ -51,77 +52,105 @@ class SearchView extends GetView<RouteSearchController> {
                         // TODO 3 : 서버에서 받아온 경로를 그리기 -> MapController의 drawMultipartPaths 함수 사용
                         // 이를 위해 경로와 현재 위치를 표시할 /navi 페이지를 만들어야 함
                         Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5.sp),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(height: 10.sp),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(height: 10.sp),
 
-                                /// 출발지 입력 필드
-                                Container(
-                                  width: double.infinity,
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 5.sp,
-                                    horizontal: 10.r,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors
-                                        .instance.searchBackgroundColor,
-                                    borderRadius: BorderRadius.circular(10.r),
-                                  ),
-                                  child: TextField(
-                                    controller: controller.startTextController,
-                                    focusNode: controller.startFocusNode,
-                                    decoration: const InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: '출발지 입력',
+                              /// 출발지 입력 필드
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 4.sp,
+                                        horizontal: 12.sp,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors
+                                            .instance.searchBackgroundColor,
+                                        borderRadius:
+                                            BorderRadius.circular(5.r),
+                                      ),
+                                      child: TextField(
+                                        controller:
+                                            controller.startTextController,
+                                        focusNode: controller.startFocusNode,
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: '출발지 입력',
+                                          isDense: true,
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontFamily: 'SCDream',
+                                        ),
+                                      ),
                                     ),
-                                    style: TextStyle(fontSize: 14.sp),
                                   ),
-                                ),
-                                SizedBox(height: 5.sp),
 
-                                /// 도착지 입력 필드
-                                Container(
-                                  width: double.infinity,
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 5.sp,
-                                    horizontal: 10.r,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors
-                                        .instance.searchBackgroundColor,
-                                    borderRadius: BorderRadius.circular(10.r),
-                                  ),
-                                  child: TextField(
-                                    controller: controller.endTextController,
-                                    focusNode: controller.endFocusNode,
-                                    decoration: const InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: '도착지 입력',
+                                  /// X 버튼
+                                  Container(
+                                    width: 40.sp,
+                                    height: 40.sp,
+                                    alignment: Alignment.center,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Log.info('검색 화면 닫기');
+                                        Get.back();
+                                      },
+                                      child: Icon(CupertinoIcons.xmark,
+                                          size: 20.sp),
                                     ),
-                                    style: TextStyle(fontSize: 14.sp),
                                   ),
-                                ),
-                                SizedBox(height: 5.sp),
-                              ],
-                            ),
-                          ),
-                        ),
+                                ],
+                              ),
+                              SizedBox(height: 5.sp),
 
-                        /// 출발지 <-> 도착지 swap 버튼
-                        Container(
-                          alignment: Alignment.topCenter,
-                          padding: EdgeInsets.all(5.sp),
-                          child: GestureDetector(
-                            onTap: () => controller.swapStartEnd(),
-                            child: Icon(
-                              CupertinoIcons.arrow_up_arrow_down,
-                              size: 30.sp,
-                            ),
+                              /// 도착지 입력 필드
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 4.sp,
+                                        horizontal: 12.sp,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors
+                                            .instance.searchBackgroundColor,
+                                        borderRadius:
+                                            BorderRadius.circular(5.r),
+                                      ),
+                                      child: TextField(
+                                        controller:
+                                            controller.endTextController,
+                                        focusNode: controller.endFocusNode,
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: '도착지 입력',
+                                          isDense: true,
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontFamily: 'SCDream',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 40.sp,
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 5.sp),
+                            ],
                           ),
                         ),
                       ],
@@ -137,7 +166,12 @@ class SearchView extends GetView<RouteSearchController> {
                             // TODO 1 : 리스트 타일 디자인 수정
                             // TODO 2 : 즐겨찾기(별/하트 모양) 버튼 추가 -> 즐겨찾기한 역은 별/하트 모양이 채워져 있도록
                             return ListTile(
-                              title: Text(station.name),
+                              title: Text(
+                                station.name,
+                                style: TextStyle(
+                                  fontFamily: 'SCDream',
+                                ),
+                              ),
                               onTap: () {
                                 // 리스트에서 해당 역을 선택하면, 출발/도착 중 포커스된 곳에 값 대입
                                 controller.selectStation(station);
@@ -154,28 +188,43 @@ class SearchView extends GetView<RouteSearchController> {
 
             /// 안내 시작 버튼 (Obx에서 RxString을 참조)
             Positioned(
-              bottom: 0,
+              bottom: 10,
               left: 0,
               right: 0,
-              child: Obx(() {
-                // 여기서는 RxString을 참조해야 함
-                final startText = controller.startInput.value.trim();
-                final endText = controller.endInput.value.trim();
+              child: Center(
+                child: Obx(() {
+                  // 여기서는 RxString을 참조해야 함
+                  final startText = controller.startInput.value.trim();
+                  final endText = controller.endInput.value.trim();
 
-                if (startText.isNotEmpty && endText.isNotEmpty) {
-                  return Container(
-                    width: double.infinity,
-                    color: Colors.white,
-                    padding: EdgeInsets.all(10.sp),
-                    child: ElevatedButton(
-                      onPressed: controller.startNavigation,
-                      child: Text('안내 시작', style: TextStyle(fontSize: 16.sp)),
-                    ),
-                  );
-                } else {
-                  return const SizedBox.shrink(); // 미표시
-                }
-              }),
+                  if (startText.isNotEmpty && endText.isNotEmpty) {
+                    return GestureDetector(
+                      onTap: () {
+                        Log.info('안내 시작 : search -> navi');
+                        controller.startNavigation();
+                      },
+                      // TODO : 버튼 스타일 수정 필요 -> kaist 파란색들 조합해서 / 배경은 투명하게 + 터치하면 배경 진해지도록
+                      child: Container(
+                        width: 70.sp,
+                        height: 70.sp,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          // TODO : 배경 색상 수정 필요
+                          color: AppColors.instance.buttonBackgroundColor,
+                          borderRadius: BorderRadius.circular(10.sp),
+                        ),
+                        child: Icon(
+                          CupertinoIcons.location_fill,
+                          color: Colors.black,
+                          size: 30.sp,
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const SizedBox.shrink(); // 미표시
+                  }
+                }),
+              ),
             ),
           ],
         ),

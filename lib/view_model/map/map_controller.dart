@@ -35,20 +35,8 @@ class MapController extends GetxController {
     // /// 지도 동북쪽 경계와 남서쪽 경계에 마커 추가
     // addMarker(northEastBound, 'northEast_bound');
     // addMarker(southWestBound, 'southWest_bound');
-    //
-    // // TEST 1) 북동쪽 좌표 -> 중앙 좌표 -> 남서쪽 좌표를 잇는 멀티 경로
-    // drawMultipartPaths(
-    //   coordinatesList: [
-    //     [northEastBound, center, southWestBound],
-    //   ],
-    //   pathId: 'multi_center_path',
-    //   width: 5.0,
-    //   outlineWidth: 2.0,
-    //   defaultColor: Colors.green,
-    //   defaultOutlineColor: Colors.black,
-    // );
 
-    // // TEST 2) 북동쪽 좌표 <-> 남서쪽 좌표 두 점을 직선으로 연결
+    // // TEST) 북동쪽 좌표 <-> 남서쪽 좌표 두 점을 직선으로 연결
     // drawLineBetween(
     //   startLat: northEastBound.latitude,
     //   startLng: northEastBound.longitude,
@@ -57,14 +45,6 @@ class MapController extends GetxController {
     //   lineId: 'line_NE_SW',
     //   color: Colors.red,
     //   width: 4.0,
-    // );
-
-    // // TEST 3) N1 역 마커 추가
-    // addStationMarker(
-    //   lat: 36.37422319491133,
-    //   lng: 127.3657201432359,
-    //   stationId: "N1",
-    //   // infoText: "N1 station",
     // );
 
     // 지도 초기화 작업: stationList의 모든 정류장을 마커로 추가
@@ -86,7 +66,6 @@ class MapController extends GetxController {
     required double lat,
     required double lng,
     required String stationId,
-    String captionText = '',
     String infoText = '',
   }) async {
     if (naverMapController == null) return;
@@ -96,7 +75,6 @@ class MapController extends GetxController {
       lat: lat,
       lng: lng,
       stationId: stationId,
-      captionText: captionText,
       infoText: infoText,
     );
 
